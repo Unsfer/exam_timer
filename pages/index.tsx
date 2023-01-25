@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
   const [partyTime, setPartyTime] = useState(false);
@@ -11,8 +10,8 @@ const Home: NextPage = () => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  // const target = new Date("2023-05-26 09:00:00");
-  const target = new Date("2023-01-25 23:59:59");
+  const target = new Date("2023-05-26 09:00:00");
+  // const target = new Date("2023-01-25 23:59:59");
 
   const calcTimer = () => {
     const now = new Date();
@@ -46,10 +45,13 @@ const Home: NextPage = () => {
 
   const pad2 = val => val.toString().padStart(2, '0');
 
+  const imagesCount = 10;
+  const getImageNum = () => Math.floor(seconds % (imagesCount * 3) / 3);
+
   return (
-    <div className={styles.container}>
+    <div className="container">
       <Head>
-        <title>Countdown Timer</title>
+        <title>ЕГЭ Таймер</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -87,9 +89,10 @@ const Home: NextPage = () => {
           </div>
           <Image
             alt="background image"
-            src="/image.webp"
+            src={`/image_${getImageNum()}.jpg`}
             layout="fill"
             quality={100}
+            priority
           />
         </>
       )}
