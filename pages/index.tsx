@@ -12,7 +12,6 @@ const Home: NextPage = () => {
   const calcTimer = () => {
     const now = new Date();
     const d = target.getTime() - now.getTime();
-    console.log(d);
     setDifference(d);
   };
 
