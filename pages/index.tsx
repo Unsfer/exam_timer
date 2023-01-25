@@ -19,18 +19,18 @@ const Home: NextPage = () => {
     const difference = target.getTime() - now.getTime();
 
     const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-    setDays(d.toString().padStart(2, '0'));
+    setDays(d);
 
     const h = Math.floor(
       (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
-    setHours(h.toString().padStart(2, '0'));
+    setHours(h);
 
     const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    setMinutes(m.toString().padStart(2, '0'));
+    setMinutes(m);
 
     const s = Math.floor((difference % (1000 * 60)) / 1000);
-    setSeconds(s.toString().padStart(2, '0'));
+    setSeconds(s);
 
     if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
       setPartyTime(true);
@@ -43,6 +43,8 @@ const Home: NextPage = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const pad2 = val => val.toString().padStart(2, '0');
 
   return (
     <div className={styles.container}>
@@ -63,22 +65,22 @@ const Home: NextPage = () => {
           <div className="timer-wrapper">
             <div className="timer-inner">
               <div className="timer-segment">
-                <span className="time">{days}</span>
+                <span className="time">{pad2(days)}</span>
                 <span className="label">Дней</span>
               </div>
               <span className="divider">:</span>
               <div className="timer-segment">
-                <span className="time">{hours}</span>
+                <span className="time">{pad2(hours)}</span>
                 <span className="label">Часов</span>
               </div>
               <span className="divider">:</span>
               <div className="timer-segment">
-                <span className="time">{minutes}</span>
+                <span className="time">{pad2(minutes)}</span>
                 <span className="label">Минут</span>
               </div>
               <span className="divider">:</span>
               <div className="timer-segment">
-                <span className="time">{seconds}</span>
+                <span className="time">{pad2(seconds)}</span>
                 <span className="label">Секунд</span>
               </div>
             </div>
