@@ -4,36 +4,16 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const Home: NextPage = () => {
-  const [partyTime, setPartyTime] = useState(false);
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [difference, setDifference] = useState(0);
 
   const target = new Date("2023-05-26 09:00:00");
-  // const target = new Date("2023-01-25 23:59:59");
+  //const target = new Date("2023-01-26 01:59:00");
 
   const calcTimer = () => {
     const now = new Date();
-    const difference = target.getTime() - now.getTime();
-
-    const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-    setDays(d);
-
-    const h = Math.floor(
-      (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    setHours(h);
-
-    const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    setMinutes(m);
-
-    const s = Math.floor((difference % (1000 * 60)) / 1000);
-    setSeconds(s);
-
-    if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
-      setPartyTime(true);
-    }
+    const d = target.getTime() - now.getTime();
+    console.log(d);
+    setDifference(d);
   };
 
   useEffect(() => {
@@ -43,10 +23,16 @@ const Home: NextPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
   const pad2 = val => val.toString().padStart(2, '0');
 
   const imagesCount = 10;
-  const getImageNum = () => Math.floor(seconds % (imagesCount * 3) / 3);
+  const secondsPerImage = 5;
+  const getActiveImageNum = () => Math.floor((minutes * 60 + seconds) % (imagesCount * secondsPerImage) / secondsPerImage);
 
   return (
     <div className="container">
@@ -55,7 +41,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {partyTime ? (
+      {difference < 0 ? (
         <>
           <h1>Happy new year!</h1>
           <video autoPlay loop muted>
@@ -66,34 +52,43 @@ const Home: NextPage = () => {
         <>
           <div className="timer-wrapper">
             <div className="timer-inner">
-              <div className="timer-segment">
-                <span className="time">{pad2(days)}</span>
-                <span className="label">Дней</span>
-              </div>
-              <span className="divider">:</span>
-              <div className="timer-segment">
-                <span className="time">{pad2(hours)}</span>
-                <span className="label">Часов</span>
-              </div>
-              <span className="divider">:</span>
-              <div className="timer-segment">
-                <span className="time">{pad2(minutes)}</span>
-                <span className="label">Минут</span>
-              </div>
-              <span className="divider">:</span>
-              <div className="timer-segment">
-                <span className="time">{pad2(seconds)}</span>
-                <span className="label">Секунд</span>
+              <div className="timer-group">
+                <div className="timer-label">До ЕГЭ по химии осталось:</div>
+                <div className="timer">
+                  <div className="timer-segment">
+                    <span className="time">{pad2(days)}</span>
+                    <span className="label">Дней</span>
+                  </div>
+                  <span className="divider">:</span>
+                  <div className="timer-segment">
+                    <span className="time">{pad2(hours)}</span>
+                    <span className="label">Часов</span>
+                  </div>
+                  <span className="divider">:</span>
+                  <div className="timer-segment">
+                    <span className="time">{pad2(minutes)}</span>
+                    <span className="label">Минут</span>
+                  </div>
+                  <span className="divider">:</span>
+                  <div className="timer-segment">
+                    <span className="time">{pad2(seconds)}</span>
+                    <span className="label">Секунд</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <Image
-            alt="background image"
-            src={`/image_${getImageNum()}.jpg`}
-            layout="fill"
-            quality={100}
-            priority
-          />
+          {[...Array(imagesCount).keys()].map(num => (
+            <Image
+              key={num}
+              alt="background image"
+              className={getActiveImageNum() === num ? 'visible' : 'hidden'}
+              src={`/image_${num}.jpg`}
+              fill
+              quality={100}
+              priority
+            />
+          ))}
         </>
       )}
     </div>
