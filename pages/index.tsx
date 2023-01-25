@@ -78,7 +78,7 @@ const Home: NextPage = () => {
               </div>
             </div>
           </div>
-          {[...Array(imagesCount).keys()].map(num => (
+          {Array.from(Array(imagesCount).keys()).map(num => (
             <Image
               key={num}
               alt="background image"
